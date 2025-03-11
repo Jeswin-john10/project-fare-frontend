@@ -2,21 +2,41 @@ import { faStackOverflow } from '@fortawesome/free-brands-svg-icons'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { registerapi } from '../services/allapi'
 
 function Auth({ register }) {
+  const navigate = useNavigate()
   const [userdetails , setUserdetails]=useState({
     username:"",
     password:"",
     email:""
   })
   console.log(userdetails);
-  const handleregister =()=>{
+
+
+  const handleregister = async()=>{
 const {username ,password,email} = userdetails
 if(!username || !password ||! email){
   alert('plese fill the form')
 }else{
   //api cal
+  const result = await registerapi(userdetails)
+  console.log(result);
+  if(result.status == 200){
+    alert('Registered Successfully')
+    setUserdetails({
+      username:"",
+      password:"",
+      email:""
+    })
+    navigate('/Login')
+  }else if(result.status==406){
+    alert(result.response.data)
+  }else{
+    alert('Something Went Wrong')
+  }
+  
 }
   }
   return (
