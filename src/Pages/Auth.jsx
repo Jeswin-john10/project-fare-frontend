@@ -3,7 +3,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { registerapi } from '../services/allapi'
+import { loginapi, registerapi } from '../services/allapi'
 
 function Auth({ register }) {
   const navigate = useNavigate()
@@ -38,6 +38,43 @@ if(!username || !password ||! email){
   }
   
 }
+  }
+
+  const handlelogin = async(e)=>{
+    const {email , password} = userdetails
+    if(!email || !password){
+      alert('please fill the form')
+    }
+    else{
+      //api call
+      const result = await loginapi({email, password})
+      console.log(result);
+      if(result.status==200){
+        alert('succesfully loggedin')
+        sessionStorage.setItem("existinguser",JSON.stringify(result.data.existinguser))
+        sessionStorage.setItem("token",result.data.token)
+        setUserdetails({
+          username:"",
+          password:"",
+          email:""
+        })
+        navigate('/')
+      }else if(result.status == 406){
+        alert(result.response.data)
+        setUserdetails({
+          username:"",
+          password:"",
+          email:""
+        })
+      }else{
+        alert('something went wrong')
+        setUserdetails({
+          username:"",
+          password:"",
+          email:""
+        })
+      }
+    }
   }
   return (
     <>
@@ -76,7 +113,7 @@ if(!username || !password ||! email){
                   <div className='mb-3'>
                     {!register ?
                       <div>
-                        <button type='button' className='btn btn-warning w-100 rounded-0'>Login</button>
+                        <button onClick={handlelogin} type='button' className='btn btn-warning w-100 rounded-0'>Login</button>
                         <p className='mt-3'>New User? click Here to <Link to={'/Register'} className='text-danger'>Register</Link></p>
                       </div> :
                       <div>
