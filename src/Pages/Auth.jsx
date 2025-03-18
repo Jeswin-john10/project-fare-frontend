@@ -4,74 +4,79 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { loginapi, registerapi } from '../services/allapi'
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 
 function Auth({ register }) {
   const navigate = useNavigate()
-  const [userdetails , setUserdetails]=useState({
-    username:"",
-    password:"",
-    email:""
+  const [userdetails, setUserdetails] = useState({
+    username: "",
+    password: "",
+    email: ""
   })
   console.log(userdetails);
 
 
-  const handleregister = async()=>{
-const {username ,password,email} = userdetails
-if(!username || !password ||! email){
-  alert('plese fill the form')
-}else{
-  //api cal
-  const result = await registerapi(userdetails)
-  console.log(result);
-  if(result.status == 200){
-    alert('Registered Successfully')
-    setUserdetails({
-      username:"",
-      password:"",
-      email:""
-    })
-    navigate('/Login')
-  }else if(result.status==406){
-    alert(result.response.data)
-  }else{
-    alert('Something Went Wrong')
-  }
-  
-}
+  const handleregister = async () => {
+    const { username, password, email } = userdetails
+    if (!username || !password || !email) {
+      // alert('plese fill the form')
+      toast.info('plese fill the form')
+    } else {
+      //api cal
+      const result = await registerapi(userdetails)
+      console.log(result);
+      if (result.status == 200) {
+    toast.success('Registered Successfully')
+        setUserdetails({
+          username: "",
+          password: "",
+          email: ""
+        })
+        navigate('/Login')
+      } else if (result.status == 406) {
+       toast(result.response.data)
+      } else {
+        toast.warning('Something Went Wrong')
+      }
+
+    }
   }
 
-  const handlelogin = async(e)=>{
-    const {email , password} = userdetails
-    if(!email || !password){
-      alert('please fill the form')
+  const handlelogin = async (e) => {
+    const { email, password } = userdetails
+    if (!email || !password) {
+      toast.info('please fill the form')
     }
-    else{
+    else {
       //api call
-      const result = await loginapi({email, password})
+      const result = await loginapi({ email, password })
       console.log(result);
-      if(result.status==200){
-        alert('succesfully loggedin')
-        sessionStorage.setItem("existinguser",JSON.stringify(result.data.existinguser))
-        sessionStorage.setItem("token",result.data.token)
+      if (result.status == 200) {
+        toast.success('succesfully loggedin')
+        sessionStorage.setItem("existinguser", JSON.stringify(result.data.existinguser))
+        sessionStorage.setItem("token", result.data.token)
         setUserdetails({
-          username:"",
-          password:"",
-          email:""
+          username: "",
+          password: "",
+          email: ""
         })
-        navigate('/')
-      }else if(result.status == 406){
-        alert(result.response.data)
+        setTimeout(()=>{
+          navigate('/')
+
+        },2000)
+      } else if (result.status == 406) {
+        toast.warning(result.response.data)
         setUserdetails({
-          username:"",
-          password:"",
-          email:""
+          username: "",
+          password: "",
+          email: ""
         })
-      }else{
-        alert('something went wrong')
+      } else {
+       toast.warning('something went wrong')
         setUserdetails({
-          username:"",
-          password:"",
-          email:""
+          username: "",
+          password: "",
+          email: ""
         })
       }
     }
@@ -101,14 +106,14 @@ if(!username || !password ||! email){
                   {register &&
 
                     <div className='mb-3'>
-                      <input value={userdetails.username} onChange={(e)=>setUserdetails({...userdetails,username:e.target.value})} type="text" placeholder='Username' className='form-control rounded-0' />
+                      <input value={userdetails.username} onChange={(e) => setUserdetails({ ...userdetails, username: e.target.value })} type="text" placeholder='Username' className='form-control rounded-0' />
                     </div>}
 
                   <div className='mb-3'>
-                    <input value={userdetails.email} onChange={(e)=>setUserdetails({...userdetails,email:e.target.value})}  type="email" placeholder='Email ID' className='form-control rounded-0' />
+                    <input value={userdetails.email} onChange={(e) => setUserdetails({ ...userdetails, email: e.target.value })} type="email" placeholder='Email ID' className='form-control rounded-0' />
                   </div>
                   <div className='mb-3'>
-                    <input value={userdetails.password} onChange={(e)=>setUserdetails({...userdetails,password:e.target.value})}  type="password" placeholder='Password' className='form-control rounded-0' />
+                    <input value={userdetails.password} onChange={(e) => setUserdetails({ ...userdetails, password: e.target.value })} type="password" placeholder='Password' className='form-control rounded-0' />
                   </div>
                   <div className='mb-3'>
                     {!register ?
@@ -127,8 +132,15 @@ if(!username || !password ||! email){
                 </form>
               </div>
             </div>
+            <ToastContainer
+position="top-center"
+autoClose={5000}
+
+theme="colored"
+/>
           </div>
         </div>
+
       </div>
     </>
 

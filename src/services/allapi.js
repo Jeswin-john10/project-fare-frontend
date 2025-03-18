@@ -10,3 +10,10 @@ export const registerapi = async(reqBody)=>{
 export const loginapi = async(reqBody)=>{
     return await commonapi('POST',`${serverurl}/login`,reqBody,"")
 }
+
+
+/// add project api
+export const addprojectapi =async(reqBody , reqHeader)=>{
+    return await commonapi('POST',`${serverurl}/add-project`,reqBody,reqHeader)
+   
+}

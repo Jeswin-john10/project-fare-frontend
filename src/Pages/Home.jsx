@@ -1,10 +1,18 @@
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Myprojectcard from '../Components/Myprojectcard'
 
 function Home() {
+  const [islogin , setIslogin]=useState(false)
+  useEffect(()=>{
+    if(sessionStorage.getItem("token")){
+      setIslogin(true)
+    }else{
+      setIslogin(false)
+    }
+  })
   return (
     <div>
 
@@ -15,10 +23,14 @@ function Home() {
               <h1 style={{fontSize:"70px"}}>Project fair</h1>
               <p>One stop destination for all software development Projects</p>
               <div>
-                <Link to={'/Login'}>                  <button className='btn p-1 text-light mt-3'>Get Started <FontAwesomeIcon icon={faArrowRight} /></button>
-                </Link>   
-                <Link to={'/Dashboard'}>                  <button className='btn p-1 text-light mt-3'>Manage Projects <FontAwesomeIcon icon={faArrowRight} /></button>
+                {islogin == false ?
+                  <Link to={'/Login'}>                  <button className='btn p-1 text-light mt-3'>Get Started <FontAwesomeIcon icon={faArrowRight} /></button>
+                </Link>   :
+                  <Link to={'/Dashboard'}>                  <button className='btn p-1 text-light mt-3'>Manage Projects <FontAwesomeIcon icon={faArrowRight} /></button>
                 </Link>
+              }
+              
+              
                 </div>           
             </div>
           </div>
